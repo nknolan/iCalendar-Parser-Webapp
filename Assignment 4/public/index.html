@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Calendar Server</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Store your iCalendar files here">
+    <meta name="keywords" content="iCalendar">
+    <meta name="author" content="nnolan">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+    <h3>Status</h3>
+    <div class="status-panel" id="status">
+    </div>
+    <button type="button" onclick="clearStatus()">Clear Status</button>
+    <hr>
+    <h3>File Log</h3>
+    <div class="file-panel">
+        <div id="file-table">
+            <table>
+                <tr>
+                    <th>File name (click to download)</th>
+                    <th>Version</th>
+                    <th>Product ID</th>
+                    <th>Number of events</th>
+                    <th>Number of properties</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+   <form ref='uploadForm'
+      id='uploadForm'
+      action='/upload'
+      method='post'
+      encType="multipart/form-data">
+        <input id="file-name-holder" type="file" name="uploadFile" />
+        <input type='submit' onclick="checkExtension()" value='Upload iCalendar File' />
+    </form>
+    <hr>
+    <h3>Calendar View</h3>
+    <h6>If a new event is added to the calender you are currently viewing, refresh the page to see it added.</h6>
+    <div class="calendar-panel">
+        <div id="select-box">
+            <strong>Select Calendar</strong>
+            <select id="calendar-panel-dropdown"></select>
+        </div>
+        <div id="calendar-table"></div>
+    </div>
+    <hr>
+    <h3>Add New Event</h3>
+    <div class="event-panel">
+        <div id="select-box-2">
+            <strong>Select Calendar</strong>
+            <select onchange="showAddEvent()" id="event-panel-dropdown"></select>
+        </div>
+        <form id="event-form">
+            <label>Event ID</label>
+            <input type="text" id="uid" placeholder="Event ID" /><br>
+            <label>Creation Date</label>
+            <input type="text" id="creation-date" placeholder="YYYYMMDD" /><br>
+            <label>Creation Time</label>
+            <input type="text" id="creation-time" placeholder="HHMMSS" />
+            <input type="checkbox" id="creation-UTC"> UTC<br>
+            <label>Start Date</label>
+            <input type="text" id="start-date" placeholder="YYYYMMDD" /><br>
+            <label>Start Time</label>
+            <input type="text" id="start-time" placeholder="HHMMSS" />
+            <input type="checkbox" id="start-UTC"> UTC<br>
+            <label>Summary (optional)</label>
+            <input type="text" id="event-summary" placeholder="Summary" /><br>
+            <button type="button" id="upload-event">Add Event To Calendar</button>
+        </form>
+    </div>
+    <hr>
+    <form ref='someform'>
+          <div class="form-group">
+              <h3>Add New Calendar</h3>
+              <h4>Calendar</h4>
+              <label for="entryBox">File Name</label>
+              <input type="text" class="form-control" id="create-fileName" placeholder="calendar.ics">
+              <label for="entryBox">Product ID</label>
+              <input type="text" class="form-control" id="create-prodid" placeholder="Product ID">
+              <label for="entryBox">Version Number</label>
+              <input type="text" class="form-control" id="create-versionNum" placeholder="Version No"><br>
+              <h4>Event</h4>
+              <p>At least one event is required to create a new calendar. To add additional events afterwards,
+              Use the 'Add New Event' tool above.</p>
+              <label for="entryBox">Event ID</label>
+              <input type="text" class="form-control" id="create-uid" placeholder="Event ID">
+              <label for="entryBox">Creation Date</label>
+              <input type="text" class="form-control" id="create-creation-date" placeholder="YYYMMDD">
+              <label for="entryBox">Creation Time</label>
+              <input type="text" class="form-control" id="create-creation-time" placeholder="HHMMSS">
+              <input type="checkbox" id="create-creation-UTC"> UTC<br>
+              <label for="entryBox">Start Date</label>
+              <input type="text" class="form-control" id="create-start-date" placeholder="YYYMMDD">
+              <label for="entryBox">Start Time</label>
+              <input type="text" class="form-control" id="create-start-time" placeholder="HHMMSS">
+              <input type="checkbox" id="create-start-UTC"> UTC<br>
+              <label for="entryBox">Summary (optional)</label>
+              <input type="text" class="form-control" id="create-summary" placeholder="Summary">
+        </div>
+        <div class="form-control">
+            <button type="button" id="create-calendar">Create Calendar</button>
+        </div>
+    </form>
+    <hr>
+    <h3>Log in to SQL Database</h3>
+    <div id="sql-panel">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Username" /><br>
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Password" /><br>
+        <label>Database</label>
+        <input type="text" id="db-name" placeholder="Database" /><br>
+        <button type="button" id="db-login">Log In</button>
+        <button type="button" id="logout">Log Out</button><br><br>
+        <div id="db-buttons">
+            <button type="button" id="store-all-files">Store All Files</button>
+            <button type="button" id="clear-all-data">Clear All Data</button>
+            <button type="button" id="display-db-status">Display DB Status</button>
+        </div>
+    </div>
+    <hr>
+    <div id="query-panel">
+        <h4>Query Database</h4>
+        <input type="radio" name="query-button" class="query-button" value="1" />Get All Events By Date<br>
+        <input type="radio" name="query-button" class="query-button" value="2" />Get All Events From File<br>
+        File: <select id="query-dropdown"></select><br>
+        <input type="radio" name="query-button" class="query-button" value="3" />Get All Events That Conflict<br>
+        <input type="radio" name="query-button" class="query-button" value="4" />Get All Future Events<br>
+        <input type="radio" name="query-button" class="query-button" value="5" />Get All Alarms With An AUDIO Action<br>
+        <input type="radio" name="query-button" class="query-button" value="6" />Get All Events With A Location<br>
+        <button type="button" id="submit-query">Submit Database Query</button>
+    </div>
+    <hr>
+    <div id="colophon"><strong>2019</strong></div>
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>

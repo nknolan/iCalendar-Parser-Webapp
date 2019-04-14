@@ -1,0 +1,98 @@
+html {
+    width: 60%;
+    height: 100%;
+    min-height: 100%;
+    margin: 0 auto;
+    font-size: 16px;
+    background-color: #FFFFFF;
+}
+body {
+    height: 100%;
+    min-height: 100%;
+    line-height: 1.75;
+    background-color: #FFFFFF;
+}
+a:link:hover {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    text-decoration: underline;
+    cursor: pointer;
+    cursor: hand;
+}
+input[type=submit], button {
+    cursor: pointer;
+    cursor: hand;
+}
+.status-panel {
+    height:120px;
+    border:1px solid #ccc;
+    overflow:auto;
+}
+.file-panel {
+    height:120px;
+    border:1px solid #ccc;
+    overflow-x:auto;
+    white-space: nowrap;
+}
+td {
+    border:1px solid #ccc;
+    padding:12px;
+    text-align:center;
+}
+th {
+    border:1px solid #ccc;
+    padding:12px;
+    text-align:center;
+    font-weight:bold;
+}
+.button {
+    text-align:center;
+}
+.calendar-panel {
+    height:300px;
+    border:1px solid #ccc;
+    overflow-x:auto;
+    white-space: nowrap;
+}
+#colophon {
+    color:white;
+    background:midnightblue;
+    text-align:right;
+}
+#db-buttons {
+    color:white;
+    background:goldenrod;
+}
+#event-form {
+    display:none;
+}
+#query-panel {
+    display:none;
+}
+#select-box {
+    color:white;
+    background:yellowgreen;
+}
+#select-box-2 {
+    color:white;
+    background:indianred;
+}
+@media(max-width: 900px) {
+    html {
+        font-size: 14px !important;
+        width: 80% !important;
+    }
+}
+@media(max-width: 480px) {
+    html {
+        font-size: 12px !important;
+        width: 90% !important;
+    }
+}
+@media(max-width: 320px) {
+    html {
+        font-size: 12px !important;
+        width: 100% !important;
+    }
+}
