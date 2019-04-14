@@ -1,7 +1,5 @@
 ## Assignment 1
-February 2019
-
-Parser library for iCalendar files.
+02/2019 — Parser library for iCalendar files.
 
 ### To Run
 
